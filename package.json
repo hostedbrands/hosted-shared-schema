@@ -1,7 +1,7 @@
 {
   "name": "@hostedbrands/shared-schema",
-  "version": "1.0.0",
-  "description": "Shared database schema for all Hosted Brands apps",
+  "version": "2.0.0",
+  "description": "Shared database schema for all Hosted Stack apps. Rebuilt from live Railway production DB on 2026-05-03.",
   "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
