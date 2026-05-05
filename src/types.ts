@@ -18,7 +18,7 @@ import {
   referrals,
   businessReferrals,
   cardOrders,
-} from "./tables";
+} from "./tables.js";
 
 // Insert schemas
 export const insertBusinessSchema = createInsertSchema(businesses).omit({ id: true });

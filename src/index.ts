@@ -25,7 +25,7 @@ export {
   referrals,
   businessReferrals,
   cardOrders,
-} from "./tables";
+} from "./tables.js";
 
 // Re-export all types
 export type {
@@ -49,7 +49,7 @@ export type {
   InsertReferral,
   InsertBusinessReferral,
   InsertCardOrder,
-} from "./types";
+} from "./types.js";
 
 // Re-export insert schemas
 export {
@@ -63,4 +63,4 @@ export {
   insertReferralSchema,
   insertBusinessReferralSchema,
   insertCardOrderSchema,
-} from "./types";
+} from "./types.js";
