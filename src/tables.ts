@@ -100,6 +100,13 @@ export const businesses = pgTable("businesses", {
   businessState: text("business_state"),
   businessZip: text("business_zip"),
 
+  // LTV calculator fields (added by Reach for projected lifetime revenue;
+  // readable by all apps). Stored as ints in cents / percentages.
+  avgInvoiceCents: integer("avg_invoice_cents"),
+  repeatRatePct: integer("repeat_rate_pct"),
+  closeRatePct: integer("close_rate_pct"),
+  perServiceInvoices: text("per_service_invoices"), // JSON: { "service-id": cents }
+
   // External API integration (Reviews)
   apiKey: text("api_key"),
   apiAutoSend: integer("api_auto_send").default(0),
