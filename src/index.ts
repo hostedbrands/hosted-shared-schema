@@ -20,6 +20,7 @@ export {
   clients,
   technicians,
   reviewRequests,
+  smsReplies,
   userProducts,
   feedback,
   referrals,

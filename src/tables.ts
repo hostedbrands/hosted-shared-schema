@@ -118,6 +118,20 @@ export const businesses = pgTable("businesses", {
   crmPollingEnabled: integer("crm_polling_enabled").default(0),
   crmPollingInterval: integer("crm_polling_interval").default(30),
   crmLastPolledAt: text("crm_last_polled_at"),
+  crmWatermark: text("crm_watermark"),
+  crmMaxJobAgeDays: integer("crm_max_job_age_days").default(30),
+  pullWorkOrders: integer("pull_work_orders").default(0),
+
+  // Send window / business hours (Reviews)
+  sendOnSaturday: integer("send_on_saturday").default(0),
+  sendOnSunday: integer("send_on_sunday").default(0),
+
+  // CRM-specific SMS template (Reviews)
+  smsTemplateCrm: text("sms_template_crm"),
+
+  // Reply forwarding / alerts (Reviews)
+  alertPhone: text("alert_phone"),
+  alertPhoneEnabled: integer("alert_phone_enabled").default(1),
 });
 
 // ============================================================
@@ -175,8 +189,12 @@ export const clients = pgTable("clients", {
   city: text("city"),
   state: text("state"),
   zip: text("zip"),
-  externalId: text("external_id"), // CRM external id (Reviews CRM polling)
-  deletedAt: text("deleted_at"),    // Soft delete
+  externalId: text("external_id"),         // CRM external id (Reviews CRM polling)
+  externalIdSource: text("external_id_source"), // 'servicemonster' | 'housecallpro' | ...
+  lastJobDate: text("last_job_date"),      // From CRM work order / invoice
+  lastJobType: text("last_job_type"),      // 'Work Order' | 'Invoice' | ...
+  lastJobExternalId: text("last_job_external_id"),
+  deletedAt: text("deleted_at"),           // Soft delete
   createdAt: text("created_at"),
 });
 
@@ -227,8 +245,40 @@ export const reviewRequests = pgTable("review_requests", {
   deliveryStatus: text("delivery_status").default("pending"),
   messageText: text("message_text"),
 
+  // CRM linkage & safety net (Reviews)
+  externalOrderId: text("external_order_id"),  // SM orderID or equivalent — dedup key
+  pendingReason: text("pending_reason"),        // 'job_age_45d' | 'name_match_phone_mismatch' | ...
+  scheduledSendAt: text("scheduled_send_at"),   // Off-hours queue — dispatched at next window
+
+  // Bookkeeping
+  createdAt: text("created_at"),
+
   // Soft delete
   deletedAt: text("deleted_at"),
+});
+
+// ============================================================
+// SMS REPLIES — Inbound message log (Reviews)
+// ============================================================
+// Touched by: Reviews (owner). Every inbound SMS to the Hosted Reviews
+// Twilio number is logged here, and (unless it's a carrier STOP/HELP
+// keyword) forwarded to the business's alert_phone.
+export const smsReplies = pgTable("sms_replies", {
+  id: serial("id").primaryKey(),
+  businessId: integer("business_id").notNull(),
+  reviewRequestId: integer("review_request_id"),
+  clientId: integer("client_id"),
+  fromPhone: text("from_phone").notNull(),
+  toPhone: text("to_phone").notNull(),
+  body: text("body").notNull(),
+  twilioSid: text("twilio_sid"),
+  forwardedTo: text("forwarded_to"),
+  forwardedSid: text("forwarded_sid"),
+  forwardedAt: text("forwarded_at"),
+  forwardStatus: text("forward_status"),
+  forwardError: text("forward_error"),
+  isStopKeyword: integer("is_stop_keyword").default(0),
+  receivedAt: text("received_at").notNull(),
 });
 
 // ============================================================
