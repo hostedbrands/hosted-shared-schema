@@ -2,3 +2,8 @@ node_modules/
 dist/
 *.log
 .DS_Store
+
+# Local secrets never enter git (Build Spec §13b)
+.env
+.env.*
+!.env.example
