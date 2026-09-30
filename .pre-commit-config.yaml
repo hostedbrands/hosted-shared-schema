@@ -1,0 +1,8 @@
+# Local guard (Build Spec §13b): blocks a commit that contains a secret.
+# One-time setup on a machine:  pip install pre-commit && pre-commit install
+# CI runs the same scan on every push and pull request (.github/workflows/secrets.yml).
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
